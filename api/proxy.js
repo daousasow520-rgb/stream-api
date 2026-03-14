@@ -1,32 +1,20 @@
 export default async function handler(req, res) {
   try {
 
-    const embed = "https://uqload.is/embed-5e82mh3e60r1.html";
+    const stream = "https://zebi.xalaflix.design/movie/1407934/free-kyh3f1/master.m3u8";
 
-    const response = await fetch(embed, {
+    const response = await fetch(stream, {
       headers: {
         "User-Agent": "Mozilla/5.0"
       }
     });
 
-    const html = await response.text();
+    const data = await response.text();
 
-    // chercher le lien mp4 dans la page
-    const match = html.match(/https?:\/\/[^"' ]+\.mp4[^"' ]*/);
-
-    if (!match) {
-      return res.status(404).json({ error: "stream not found" });
-    }
-
-    const videoUrl = match[0];
-
-    const video = await fetch(videoUrl);
-    const buffer = await video.arrayBuffer();
-
-    res.setHeader("Content-Type", "video/mp4");
+    res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    res.send(Buffer.from(buffer));
+    res.send(data);
 
   } catch (err) {
     res.status(500).json({ error: err.toString() });
