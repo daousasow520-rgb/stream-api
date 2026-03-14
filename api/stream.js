@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
-
 export default async function handler(req, res) {
+
   try {
+
     const embedUrl = "https://uqload.is/embed-5e82mh3e60r1.html";
 
     const response = await fetch(embedUrl, {
@@ -13,16 +13,26 @@ export default async function handler(req, res) {
 
     const html = await response.text();
 
-    const regex = /https:\/\/v6\.uqload\.is\/hls2\/[^"]+master\.m3u8[^"]*/i;
-    const match = html.match(regex);
+    // cherche mp4 ou m3u8
+    const match = html.match(/https?:\/\/[^"' ]+\.(mp4|m3u8)[^"' ]*/);
 
     if (!match) {
-      return res.status(404).json({ error: "stream not found" });
+      return res.status(404).json({
+        error: "stream not found"
+      });
     }
 
-    res.status(200).json({ stream: match[0] });
+    return res.status(200).json({
+      stream: match[0]
+    });
 
-  } catch (e) {
-    res.status(500).json({ error: "server error" });
+  } catch (error) {
+
+    return res.status(500).json({
+      error: "server error",
+      message: error.toString()
+    });
+
   }
-        }
+
+}
