@@ -1,38 +1,33 @@
 export default async function handler(req, res) {
-
   try {
+    const { url } = req.query;
 
-    const embedUrl = "https://uqload.is/embed-5e82mh3e60r1.html";
+    if (!url) {
+      return res.status(400).json({ error: "No URL provided" });
+    }
 
-    const response = await fetch(embedUrl, {
+    const response = await fetch(url, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        "Referer": "https://uqload.is/"
+        "Referer": url
       }
     });
 
     const html = await response.text();
 
-    // cherche mp4 ou m3u8
     const match = html.match(/https?:\/\/[^"' ]+\.(mp4|m3u8)[^"' ]*/);
 
     if (!match) {
-      return res.status(404).json({
-        error: "stream not found"
-      });
+      return res.status(404).json({ error: "stream not found" });
     }
 
-    return res.status(200).json({
-      stream: match[0]
-    });
+    const stream = match[0];
 
-  } catch (error) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/json");
+    return res.status(200).json({ stream });
 
-    return res.status(500).json({
-      error: "server error",
-      message: error.toString()
-    });
-
+  } catch (err) {
+    return res.status(500).json({ error: "server error", message: err.toString() });
   }
-
 }
