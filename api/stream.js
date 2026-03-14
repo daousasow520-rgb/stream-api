@@ -2,18 +2,18 @@ import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   try {
-    const embedUrl = "https://vidzy.live/embed-lz3bcc50g4mw.html";
+    const embedUrl = "https://uqload.is/embed-5e82mh3e60r1.html";
 
     const response = await fetch(embedUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        "Referer": "https://vidzy.live/"
+        "Referer": "https://uqload.is/"
       }
     });
 
     const html = await response.text();
 
-    const regex = /https:\/\/v6\.vidzy\.live\/hls2\/[^"]+master\.m3u8[^"]*/i;
+    const regex = /https:\/\/v6\.uqload\.is\/hls2\/[^"]+master\.m3u8[^"]*/i;
     const match = html.match(regex);
 
     if (!match) {
